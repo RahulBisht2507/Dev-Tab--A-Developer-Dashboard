@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Code2, CheckSquare, Plus, Trash2, Copy, Check } from 'lucide-react';
-import { DevTask } from '../types';
-import { useStorage } from '../hooks/useStorage';
+import { DevTask } from '../../types';
+import { useStorage } from '../../hooks/useStorage';
 
 const DEFAULT_SNIPPET = `// DevTab Quick Scratchpad
 const devSession = {

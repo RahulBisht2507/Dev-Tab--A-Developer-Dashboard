@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Search, Globe, Github, Terminal, BookOpen, Package, Youtube, Calculator, X } from 'lucide-react';
-import { SearchEngine } from '../types';
+import { SearchEngine } from '../../types';
 
 const SEARCH_ENGINES: SearchEngine[] = [
   { id: 'google', name: 'Google', prefix: '', url: 'https://www.google.com/search?q=', placeholder: 'Search web or type prefix (gh, so, mdn, npm)...' },

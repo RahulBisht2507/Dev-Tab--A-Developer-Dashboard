@@ -1,6 +1,6 @@
 import React from 'react';
 import { X, User, Layout, ShieldAlert } from 'lucide-react';
-import { UserSettings } from '../types';
+import { UserSettings } from '../../types';
 
 interface SettingsModalProps {
   isOpen: boolean;

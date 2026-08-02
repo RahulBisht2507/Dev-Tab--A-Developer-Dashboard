@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Github, Flame, Star, GitFork, MessageSquare, ExternalLink, RefreshCw } from 'lucide-react';
-import { useFetchFeeds } from '../hooks/useFetchFeeds';
+import { useFetchFeeds } from '../../hooks/useFetchFeeds';
 
 interface DevFeedsProps {
   selectedLanguage: string;

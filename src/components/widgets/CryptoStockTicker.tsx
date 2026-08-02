@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { TrendingUp, TrendingDown, Coins } from 'lucide-react';
-import { CryptoItem } from '../types';
+import { CryptoItem } from '../../types';
 
 const MOCK_TICKERS: CryptoItem[] = [
   { symbol: 'BTC', name: 'Bitcoin', price: 68420.5, change24h: 3.42 },

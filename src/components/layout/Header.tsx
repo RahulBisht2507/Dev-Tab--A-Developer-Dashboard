@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Terminal, Settings, Palette, Search, Clock, Wrench } from 'lucide-react';
-import { ThemeType } from '../types';
+import { ThemeType } from '../../types';
 
 interface HeaderProps {
   userName: string;

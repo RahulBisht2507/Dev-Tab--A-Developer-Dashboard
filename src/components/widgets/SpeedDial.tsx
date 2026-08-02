@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Plus, Trash2, ExternalLink } from 'lucide-react';
-import { ShortcutItem } from '../types';
-import { useStorage } from '../hooks/useStorage';
+import { ShortcutItem } from '../../types';
+import { useStorage } from '../../hooks/useStorage';
 
 const INITIAL_SHORTCUTS: ShortcutItem[] = [
   { id: '1', title: 'GitHub', url: 'https://github.com', category: 'dev', hotkey: '1' },

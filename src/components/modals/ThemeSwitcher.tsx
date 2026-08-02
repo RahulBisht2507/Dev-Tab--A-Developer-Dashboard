@@ -1,6 +1,6 @@
 import React from 'react';
 import { X, Check } from 'lucide-react';
-import { ThemeType } from '../types';
+import { ThemeType } from '../../types';
 
 interface ThemeSwitcherProps {
   isOpen: boolean;

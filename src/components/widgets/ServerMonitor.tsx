@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Activity, Plus, RefreshCw, Trash2, Globe } from 'lucide-react';
-import { ServerTarget } from '../types';
-import { useStorage } from '../hooks/useStorage';
+import { ServerTarget } from '../../types';
+import { useStorage } from '../../hooks/useStorage';
 
 const INITIAL_SERVERS: ServerTarget[] = [
   { id: '1', name: 'GitHub API', url: 'https://api.github.com', status: 'checking' },
