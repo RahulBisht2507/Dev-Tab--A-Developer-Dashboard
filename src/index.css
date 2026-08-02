@@ -1,0 +1,338 @@
+/* DevTab - Developer Dashboard Design System & Themes */
+
+:root[data-theme="vscode"] {
+  --bg-primary: #1e1e1e;
+  --bg-secondary: #252526;
+  --bg-tertiary: #2d2d2d;
+  --bg-card: rgba(37, 37, 38, 0.75);
+  --border-color: rgba(255, 255, 255, 0.1);
+  --accent-color: #007acc;
+  --accent-hover: #0098ff;
+  --text-primary: #d4d4d4;
+  --text-secondary: #858585;
+  --text-accent: #4ec9b0;
+  --code-bg: #181818;
+  --badge-bg: rgba(0, 122, 204, 0.15);
+  --shadow-color: rgba(0, 0, 0, 0.4);
+}
+
+:root[data-theme="tokyonight"] {
+  --bg-primary: #1a1b26;
+  --bg-secondary: #24283b;
+  --bg-tertiary: #2f354f;
+  --bg-card: rgba(36, 40, 59, 0.75);
+  --border-color: rgba(122, 162, 247, 0.15);
+  --accent-color: #7aa2f7;
+  --accent-hover: #89b4fa;
+  --text-primary: #a9b1d6;
+  --text-secondary: #565f89;
+  --text-accent: #7dcfff;
+  --code-bg: #16161e;
+  --badge-bg: rgba(122, 162, 247, 0.15);
+  --shadow-color: rgba(10, 10, 15, 0.5);
+}
+
+:root[data-theme="cyberpunk"] {
+  --bg-primary: #090a10;
+  --bg-secondary: #121524;
+  --bg-tertiary: #1c2038;
+  --bg-card: rgba(18, 21, 36, 0.8);
+  --border-color: rgba(0, 240, 255, 0.25);
+  --accent-color: #00f0ff;
+  --accent-hover: #ff0055;
+  --text-primary: #e2e8f0;
+  --text-secondary: #718096;
+  --text-accent: #ff0055;
+  --code-bg: #05060a;
+  --badge-bg: rgba(0, 240, 255, 0.15);
+  --shadow-color: rgba(0, 240, 255, 0.2);
+}
+
+:root[data-theme="catppuccin"] {
+  --bg-primary: #1e1e2e;
+  --bg-secondary: #313244;
+  --bg-tertiary: #45475a;
+  --bg-card: rgba(49, 50, 68, 0.75);
+  --border-color: rgba(203, 166, 247, 0.15);
+  --accent-color: #cba6f7;
+  --accent-hover: #f5c2e7;
+  --text-primary: #cdd6f4;
+  --text-secondary: #9399b2;
+  --text-accent: #89b4fa;
+  --code-bg: #181825;
+  --badge-bg: rgba(203, 166, 247, 0.15);
+  --shadow-color: rgba(17, 17, 27, 0.5);
+}
+
+:root[data-theme="matrix"] {
+  --bg-primary: #040a06;
+  --bg-secondary: #0a170f;
+  --bg-tertiary: #112619;
+  --bg-card: rgba(10, 23, 15, 0.8);
+  --border-color: rgba(0, 255, 102, 0.2);
+  --accent-color: #00ff66;
+  --accent-hover: #52ff94;
+  --text-primary: #b8ffd1;
+  --text-secondary: #408a59;
+  --text-accent: #00ff66;
+  --code-bg: #020503;
+  --badge-bg: rgba(0, 255, 102, 0.15);
+  --shadow-color: rgba(0, 255, 102, 0.15);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  min-height: 100vh;
+  overflow-x: hidden;
+  line-height: 1.5;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.mono {
+  font-family: 'Fira Code', monospace;
+}
+
+/* App Wrapper */
+.devtab-container {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 1.5rem 2rem 3rem 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+}
+
+/* Glassmorphism Card Utility */
+.glass-card {
+  background: var(--bg-card);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--border-color);
+  border-radius: 14px;
+  padding: 1.25rem;
+  box-shadow: 0 8px 32px 0 var(--shadow-color);
+  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.glass-card:hover {
+  border-color: rgba(255, 255, 255, 0.18);
+}
+
+/* Grid Layout */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 1.75rem;
+}
+
+@media (max-width: 1024px) {
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.left-column, .right-column {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* Header & Terminal Clock */
+.terminal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  padding: 1.25rem 1.5rem;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 14px;
+}
+
+.terminal-title-group {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.terminal-dots {
+  display: flex;
+  gap: 6px;
+}
+
+.dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}
+.dot-red { background: #ff5f56; }
+.dot-yellow { background: #ffbd2e; }
+.dot-green { background: #27c93f; }
+
+.prompt-text {
+  font-family: 'Fira Code', monospace;
+  font-size: 0.95rem;
+  color: var(--accent-color);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.time-display {
+  font-family: 'Fira Code', monospace;
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+}
+
+.digital-time {
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: -0.02em;
+}
+
+.digital-date {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+
+/* Buttons & Controls */
+.btn-icon {
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  padding: 0.5rem 0.75rem;
+  border-radius: 8px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: inherit;
+  font-size: 0.85rem;
+  transition: all 0.2s ease;
+}
+
+.btn-icon:hover {
+  background: var(--accent-color);
+  color: #fff;
+  border-color: var(--accent-color);
+}
+
+/* Speed Dial Grid */
+.speed-dial-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 1rem;
+}
+
+.speed-dial-item {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  text-decoration: none;
+  color: var(--text-primary);
+  transition: all 0.2s ease;
+  position: relative;
+  cursor: pointer;
+}
+
+.speed-dial-item:hover {
+  transform: translateY(-3px);
+  border-color: var(--accent-color);
+  box-shadow: 0 6px 20px var(--shadow-color);
+}
+
+.speed-dial-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  background: var(--bg-tertiary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent-color);
+}
+
+.speed-dial-title {
+  font-size: 0.85rem;
+  font-weight: 500;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+.hotkey-badge {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  font-family: 'Fira Code', monospace;
+  font-size: 0.65rem;
+  background: var(--bg-tertiary);
+  color: var(--text-secondary);
+  padding: 1px 5px;
+  border-radius: 4px;
+  border: 1px solid var(--border-color);
+}
+
+/* Custom Modal / Overlay (Command Palette & Settings) */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(8px);
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding-top: 10vh;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  width: 90%;
+  max-width: 650px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+  overflow: hidden;
+}
+
+/* Scrollbar Customization */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-primary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--bg-tertiary);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-color);
+}
