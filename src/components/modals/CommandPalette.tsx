@@ -20,7 +20,19 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({ isOpen, onClose 
   const [query, setQuery] = useState('');
   const [selectedEngine, setSelectedEngine] = useState<SearchEngine>(SEARCH_ENGINES[0]);
   const [calcResult, setCalcResult] = useState<string | null>(null);
+  const [customEngines, setCustomEngines] = useState<SearchEngine[]>([]);
   const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem('devtab_custom_commands');
+      if (stored) {
+        setCustomEngines(JSON.parse(stored).data || []);
+      }
+    } catch (e) {}
+  }, [isOpen]);
+
+  const allEngines = [...SEARCH_ENGINES, ...customEngines];
 
   // Focus input when opened
   useEffect(() => {
@@ -65,7 +77,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({ isOpen, onClose 
     const spaceIndex = trimmed.indexOf(' ');
     if (spaceIndex > 0) {
       const firstWord = trimmed.slice(0, spaceIndex).toLowerCase();
-      const matched = SEARCH_ENGINES.find((e) => e.prefix === firstWord);
+      const matched = allEngines.find((e) => e.prefix === firstWord);
       if (matched && matched.id !== selectedEngine.id) {
         setSelectedEngine(matched);
       }
@@ -101,7 +113,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({ isOpen, onClose 
     // Check if query starts with prefix
     const parts = finalQuery.split(' ');
     const potentialPrefix = parts[0].toLowerCase();
-    const matchedPrefix = SEARCH_ENGINES.find((s) => s.prefix === potentialPrefix);
+    const matchedPrefix = allEngines.find((s) => s.prefix === potentialPrefix);
 
     if (matchedPrefix && parts.length > 1) {
       engine = matchedPrefix;
@@ -135,7 +147,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({ isOpen, onClose 
           borderBottom: '1px solid var(--border-color)',
           overflowX: 'auto'
         }}>
-          {SEARCH_ENGINES.map((engine) => (
+          {allEngines.map((engine) => (
             <button
               key={engine.id}
               onClick={() => setSelectedEngine(engine)}

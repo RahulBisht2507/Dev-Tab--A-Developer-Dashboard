@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { DragDropContext, Droppable, Draggable, DropResult } from '@hello-pangea/dnd';
 import { Header } from './components/layout/Header';
 import { SpeedDial } from './components/widgets/SpeedDial';
 import { DevFeeds } from './components/widgets/DevFeeds';
@@ -31,6 +32,9 @@ const DEFAULT_SETTINGS: UserSettings = {
   selectedLanguage: 'all',
   ambientSound: 'off',
   ambientVolume: 0.3,
+  backgroundType: 'matrix',
+  customBackgroundUrl: '',
+  spotifyPlayerMode: 'lofi',
 };
 
 export function App() {
@@ -39,6 +43,27 @@ export function App() {
   const [isThemeModalOpen, setIsThemeModalOpen] = useState(false);
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
   const [isDevUtilsOpen, setIsDevUtilsOpen] = useState(false);
+
+  const [layout, setLayout] = useStorage<{leftColumn: string[], rightColumn: string[]}>('devtab_layout', {
+    leftColumn: ['speedDial', 'devFeeds'],
+    rightColumn: ['serverMonitor', 'lofiPlayer', 'focusTimer', 'devNotes']
+  });
+
+  const handleDragEnd = (result: DropResult) => {
+    if (!result.destination) return;
+    const { source, destination } = result;
+
+    if (source.droppableId === destination.droppableId && source.index === destination.index) return;
+
+    const newLayout = { ...layout };
+    const sourceCol = newLayout[source.droppableId as keyof typeof newLayout];
+    const destCol = newLayout[destination.droppableId as keyof typeof newLayout];
+    
+    const [moved] = sourceCol.splice(source.index, 1);
+    destCol.splice(destination.index, 0, moved);
+
+    setLayout(newLayout);
+  };
 
   // Set theme data attribute on root element
   useEffect(() => {
@@ -62,8 +87,30 @@ export function App() {
 
   return (
     <>
-      {/* Background Matrix Canvas */}
-      <MatrixBackground enabled={settings.showMatrixRain !== false} />
+      {/* Dynamic Backgrounds */}
+      {(!settings.backgroundType || settings.backgroundType === 'matrix') && (
+        <MatrixBackground enabled={settings.showMatrixRain !== false} />
+      )}
+      {settings.backgroundType === 'unsplash' && (
+        <div style={{
+          position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, zIndex: 0,
+          backgroundImage: `url(${settings.customBackgroundUrl || 'https://source.unsplash.com/1920x1080/?nature,code'})`,
+          backgroundSize: 'cover', backgroundPosition: 'center', opacity: 0.6
+        }} />
+      )}
+      {settings.backgroundType === 'color' && (
+        <div style={{
+          position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, zIndex: 0,
+          backgroundColor: settings.customBackgroundUrl || 'var(--bg-primary)'
+        }} />
+      )}
+      {settings.backgroundType === 'image' && (
+        <div style={{
+          position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, zIndex: 0,
+          backgroundImage: `url(${settings.customBackgroundUrl})`,
+          backgroundSize: 'cover', backgroundPosition: 'center', opacity: 0.8
+        }} />
+      )}
 
       <div className="devtab-container" style={{ position: 'relative', zIndex: 1 }}>
         {/* Terminal Header */}
@@ -85,26 +132,77 @@ export function App() {
         )}
 
         {/* Main Dashboard Layout */}
-        <div className="dashboard-grid">
-          {/* Left Main Column */}
-          <div className="left-column">
-            {settings.showSpeedDial !== false && <SpeedDial />}
-            {settings.showFeeds !== false && (
-              <DevFeeds
-                selectedLanguage={settings.selectedLanguage || 'all'}
-                onLanguageChange={handleLanguageChange}
-              />
-            )}
-          </div>
+        <DragDropContext onDragEnd={handleDragEnd}>
+          <div className="dashboard-grid">
+            <Droppable droppableId="leftColumn">
+              {(provided) => (
+                <div className="left-column" {...provided.droppableProps} ref={provided.innerRef}>
+                  {layout.leftColumn.map((widgetId, index) => {
+                    const WIDGETS: Record<string, { el: JSX.Element, show: boolean }> = {
+                      speedDial: { el: <SpeedDial />, show: settings.showSpeedDial !== false },
+                      devFeeds: { el: <DevFeeds selectedLanguage={settings.selectedLanguage || 'all'} onLanguageChange={handleLanguageChange} />, show: settings.showFeeds !== false },
+                      serverMonitor: { el: <ServerMonitor />, show: settings.showServerMonitor !== false },
+                      lofiPlayer: { el: <LofiPlayer />, show: settings.showLofiPlayer !== false },
+                      focusTimer: { el: <FocusTimer />, show: settings.showTimer !== false },
+                      devNotes: { el: <DevNotes />, show: settings.showScratchpad !== false },
+                    };
+                    
+                    const widget = WIDGETS[widgetId];
+                    if (!widget || !widget.show) return null;
 
-          {/* Right Sidebar Column */}
-          <div className="right-column">
-            {settings.showServerMonitor !== false && <ServerMonitor />}
-            {settings.showLofiPlayer !== false && <LofiPlayer />}
-            {settings.showTimer !== false && <FocusTimer />}
-            {settings.showScratchpad !== false && <DevNotes />}
+                    return (
+                      <Draggable key={widgetId} draggableId={widgetId} index={index}>
+                        {(provided) => (
+                          <div ref={provided.innerRef} {...provided.draggableProps} style={{ ...provided.draggableProps.style, marginBottom: '1.25rem' }}>
+                            <div {...provided.dragHandleProps} style={{ display: 'flex', justifyContent: 'center', cursor: 'grab', opacity: 0.3, paddingBottom: '4px' }}>
+                              <div style={{ width: '40px', height: '4px', background: 'var(--text-secondary)', borderRadius: '2px' }} />
+                            </div>
+                            {widget.el}
+                          </div>
+                        )}
+                      </Draggable>
+                    );
+                  })}
+                  {provided.placeholder}
+                </div>
+              )}
+            </Droppable>
+
+            <Droppable droppableId="rightColumn">
+              {(provided) => (
+                <div className="right-column" {...provided.droppableProps} ref={provided.innerRef}>
+                  {layout.rightColumn.map((widgetId, index) => {
+                    const WIDGETS: Record<string, { el: JSX.Element, show: boolean }> = {
+                      speedDial: { el: <SpeedDial />, show: settings.showSpeedDial !== false },
+                      devFeeds: { el: <DevFeeds selectedLanguage={settings.selectedLanguage || 'all'} onLanguageChange={handleLanguageChange} />, show: settings.showFeeds !== false },
+                      serverMonitor: { el: <ServerMonitor />, show: settings.showServerMonitor !== false },
+                      lofiPlayer: { el: <LofiPlayer />, show: settings.showLofiPlayer !== false },
+                      focusTimer: { el: <FocusTimer />, show: settings.showTimer !== false },
+                      devNotes: { el: <DevNotes />, show: settings.showScratchpad !== false },
+                    };
+                    
+                    const widget = WIDGETS[widgetId];
+                    if (!widget || !widget.show) return null;
+
+                    return (
+                      <Draggable key={widgetId} draggableId={widgetId} index={index}>
+                        {(provided) => (
+                          <div ref={provided.innerRef} {...provided.draggableProps} style={{ ...provided.draggableProps.style, marginBottom: '1.25rem' }}>
+                            <div {...provided.dragHandleProps} style={{ display: 'flex', justifyContent: 'center', cursor: 'grab', opacity: 0.3, paddingBottom: '4px' }}>
+                              <div style={{ width: '40px', height: '4px', background: 'var(--text-secondary)', borderRadius: '2px' }} />
+                            </div>
+                            {widget.el}
+                          </div>
+                        )}
+                      </Draggable>
+                    );
+                  })}
+                  {provided.placeholder}
+                </div>
+              )}
+            </Droppable>
           </div>
-        </div>
+        </DragDropContext>
 
         {/* Modals & Overlays */}
         <CommandPalette

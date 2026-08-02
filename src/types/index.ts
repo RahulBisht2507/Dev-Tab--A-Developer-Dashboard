@@ -77,4 +77,8 @@ export interface UserSettings {
   selectedLanguage: string;
   ambientSound: 'off' | 'rain' | 'white-noise' | 'synthwave';
   ambientVolume: number;
+  backgroundType: 'matrix' | 'unsplash' | 'color' | 'image';
+  customBackgroundUrl: string;
+  spotifyClientId?: string;
+  spotifyPlayerMode?: 'lofi' | 'spotify';
 }
